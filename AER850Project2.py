@@ -54,3 +54,11 @@ mymodel = models.Sequential([
     layers.Dropout(0.5), # drop half of the neurons
     layers.Dense(3, activation='relu')]
 )
+
+# configer the model with loss and metrics
+mymodel.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# summary of the model showing dimensions and # of parameters for each layer
+mymodel.summary()
