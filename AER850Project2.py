@@ -1,6 +1,8 @@
 import keras
 from keras import layers, models
 from keras.preprocessing import image_dataset_from_directory
+from keras.optimizers import Adam
+import matplotlib.pyplot as plt
 
 """ Step 1: Data Processing """
 
@@ -33,7 +35,7 @@ trainset = trainset.map(lambda x, y: (augment(x, training=True), y))
 
 validset = validset.map(lambda x, y: (layers.Rescaling(1./255)(x), y))
 
-""" Step 2: Neural Network Architecture Design """
+""" Step 2 & 3: Neural Network Architecture Design & Hyperparameter Analysis"""
 
 mymodel = models.Sequential([
 
@@ -52,13 +54,21 @@ mymodel = models.Sequential([
     layers.Flatten(), # turns 2D into 1D data
     layers.Dense(64, activation='relu'),
     layers.Dropout(0.5), # drop half of the neurons
-    layers.Dense(3, activation='relu')]
+    layers.Dense(3, activation='softmax')]
 )
 
 # configer the model with loss and metrics
-mymodel.compile(optimizer='adam',
+mymodel.compile(optimizer=Adam(learning_rate=0.001),
               loss='categorical_crossentropy',
-              metrics=['accuracy'])
+              metrics=['accuracy','precision','f1'])
 
 # summary of the model showing dimensions and # of parameters for each layer
 mymodel.summary()
+
+""" Step 4: Model Evaluation """
+
+mymodel.fit(
+    trainset,
+    validation_data=validset,
+    epochs = 10
+)
