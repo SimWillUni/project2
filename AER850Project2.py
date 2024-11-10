@@ -28,8 +28,8 @@ augment = models.Sequential([
     layers.Rescaling(1./255),
     layers.RandomZoom(0.1),
     layers.RandomTranslation(0.1,0.1),
-    layers.RandomFlip("horizontal")
-    layers.RandomRotation()
+    layers.RandomFlip("horizontal"),
+    layers.RandomRotation(factor=0.1)
 ])
 
 trainset = trainset.map(lambda x, y: (augment(x, training=True), y))
@@ -51,18 +51,19 @@ mymodel = models.Sequential([
     layers.Conv2D(128, (3, 3), activation='relu'),
     layers.MaxPooling2D((2, 2)),
 
-    layers.Conv2D(256, (3, 3), activation='relu'),
+    layers.Conv2D(128, (3, 3), activation='relu'),
     layers.MaxPooling2D((2, 2)),
 
     layers.Flatten(), # turns 2D into 1D data
-    layers.Dense(64, activation='relu'),
-    layers.Dropout(0.3), # drop some of the neurons
+    layers.Dense(128, activation='relu'),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.5), # drop some of the neurons
     layers.Dense(3, activation='softmax')]
 )
 
 # configer the model with loss and metrics
 
-mymodel.compile(optimizer=Adam(learning_rate=0.01),
+mymodel.compile(optimizer=Adam(learning_rate=0.001),
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 
@@ -74,7 +75,7 @@ mymodel.summary()
 fittedmodel = mymodel.fit(
     trainset,
     validation_data=validset,
-    epochs = 2
+    epochs = 20
 )
 
 fig, axes = plt.subplots(1, 2)
@@ -91,3 +92,5 @@ axes[1].set_title('Model Loss')
 axes[1].legend()
 
 plt.show()
+
+mymodel.save("../mymodel.keras")
