@@ -6,12 +6,6 @@ import matplotlib.pyplot as plt
 mymodel = load_model("../mymodel.keras")
 classes = ["Crack", "Missing Head", "Paint Off"]
 
-""" test image paths """
-
-#data/test/crack/test_crack.jpg
-#data/test/crack/test_paintoff.jpg
-#data/test/crack/test_missinghead.jpg
-
 # func to predict the class and display the image
 def display_prediction(img_path):
     img = image.load_img(img_path, target_size=(500, 500))
